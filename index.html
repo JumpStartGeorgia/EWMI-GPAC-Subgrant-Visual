@@ -12,14 +12,8 @@
   <body>
 
     <div class="container-fluid">
-      <div class="filter_container">
-        filters      
-      </div>
-      <div class="map">
-        map
-      </div>
       <div class="filter_container row">
-        <div class="filter_budget col-md-2" data-type="budget" data-analysis="between">
+        <div class="filter_budget col-sm-2" data-type="budget" data-analysis="between">
           Budget: 
           <select>
             <option value="0">All</option>
@@ -28,30 +22,25 @@
             <option value="20000-">&gt; 20,000</option>
           </select>
         </div>
-        <div class="filter_start_year col-md-2" style="display:none;" data-type="start_date" data-analysis="year">
+        <div class="filter_start_date col-sm-2" style="display:none;" data-type="start_date" data-analysis="year">
           Start Year: 
-          <select>
-            <option value="0">All</option>
-          </select>
+          <select></select>
         </div>
-        <div class="filter_end_year col-md-2" style="display:none;" data-type="end_date" data-analysis="year">
+        <div class="filter_end_date col-sm-2" style="display:none;" data-type="end_date" data-analysis="year">
           End Year: 
-          <select>
-            <option value="0">All</option>
-          </select>
+          <select></select>
         </div>
-        <div class="filter_type col-md-3" style="display:none;" data-type="type">
+        <div class="filter_type col-sm-3" style="display:none;" data-type="type">
           Grant Type: 
-          <select>
-            <option value="0">All</option>
-          </select>
+          <select></select>
         </div>
-        <div class="filter_topic col-md-3" style="display:none;" data-type="topic">
+        <div class="filter_topic col-sm-3" style="display:none;" data-type="topic">
           Topic / Area: 
-          <select>
-            <option value="0">All</option>
-          </select>
+          <select></select>
         </div>
+      </div>
+      <div class="map">
+        map
       </div>
       <div class="table_container table-responsive">
         <table id="data_table" class="table table-striped table-bordered table-hover" >
@@ -113,7 +102,44 @@
             return index == $.inArray(el, array);
           });
         }
-        
+
+        // reload the list that has the class name of 'filter_key', where key is passed in
+        function reload_select_list(key, is_date, data){
+          var objs;
+          if (is_date){
+            objs = $.map(data, function(item,i){return item[key].split('/')[2]});
+          }else {
+            objs = $.map(data, function(item,i){return item[key]});
+          }
+          var uniq_objs = unique(objs).sort();
+          var existing_value = $('.filter_' + key + ' select').val();
+          $('.filter_' + key + ' select').empty();
+          $('.filter_' + key + ' select')
+             .append($("<option></option>")
+             .attr("value",'0')
+             .text('All')); 
+          $.each(uniq_objs, function(index, value) {   
+               $('.filter_' + key + ' select')
+                   .append($("<option></option>")
+                   .attr("value",value)
+                   .text(value)); 
+          });
+          $('.filter_' + key + ' select').val(existing_value);
+          $('.filter_' + key + '').show();
+        }
+
+        // update the datatable and filters using the data provided
+        function refresh_data(data){
+          // update the data table with the new data
+          update_data_table(data);
+
+          // reload the lists
+          reload_select_list('type', false, data);
+          reload_select_list('topic', false, data);
+          reload_select_list('start_date', true, data);
+          reload_select_list('end_date', true, data);   
+        }
+
         // special sorts
         jQuery.extend( jQuery.fn.dataTableExt.oSort, {
             "formatted-num-pre": function ( a ) {
@@ -152,7 +178,6 @@
           data_table = $('#data_table').dataTable({
             "sPaginationType": "bs_normal",
             "bProcessing": true,
-            "aaData": json_data,
             "iDisplayLength": 20,
             "aLengthMenu": [[20, 40, 60, 80], [20, 40, 60, 80]],
             "aoColumns": [
@@ -169,50 +194,8 @@
             ]
           });
           
-          // get unique values for type
-          var types = $.map(json_data, function(item,i){return item.type});
-          var uniq_types = unique(types).sort();
-          $.each(uniq_types, function(index, value) {   
-               $('.filter_type select')
-                   .append($("<option></option>")
-                   .attr("value",value)
-                   .text(value)); 
-          });
-          $('.filter_type').show();
-
-          // get unique values for topic
-          var topics = $.map(json_data, function(item,i){return item.topic});
-          var uniq_topics = unique(topics).sort();
-          $.each(uniq_topics, function(index, value) {   
-               $('.filter_topic select')
-                   .append($("<option></option>")
-                   .attr("value",value)
-                   .text(value)); 
-          });
-          $('.filter_topic').show();
-          
-          // get unique values for start year
-          var start_years = $.map(json_data, function(item,i){return item.start_date.split('/')[2]});
-          var uniq_start_years = unique(start_years).sort();
-          $.each(uniq_start_years, function(index, value) {   
-               $('.filter_start_year select')
-                   .append($("<option></option>")
-                   .attr("value",value)
-                   .text(value)); 
-          });
-          $('.filter_start_year').show();
-          
-          // get unique values for end year
-          var end_years = $.map(json_data, function(item,i){return item.end_date.split('/')[2]});
-          var uniq_end_years = unique(end_years).sort();
-          $.each(uniq_end_years, function(index, value) {   
-               $('.filter_end_year select')
-                   .append($("<option></option>")
-                   .attr("value",value)
-                   .text(value)); 
-          });
-          $('.filter_end_year').show();
-          
+          // load the data into the table and load the filters
+          refresh_data(json_data);          
           
 
 
@@ -262,8 +245,10 @@
                 return ( test );
               });
             }
-            // update the data table with the filtered data
-            update_data_table(filter_data);
+
+            // update the data table and filters
+            refresh_data(filter_data);          
+
 
           });  
   
