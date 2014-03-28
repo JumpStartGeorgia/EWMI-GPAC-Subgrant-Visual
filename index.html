@@ -11,27 +11,52 @@
     <title>EWMI G-PAC Sub-Grants</title>
     
     <style>
+      .popup {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+      }
+      .popup h4 {
+        margin: 0 0 5px;
+        color: #777;
+      }
+
       .legend {
-          line-height: 18px;
-          color: #000;
+        line-height: 18px;
+        color: #000;
       }
       .legend i {
-          width: 18px;
-          height: 18px;
-          float: left;
-          margin-right: 8px;
-          opacity: 0.9;
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.9;
+      }
+
+      .filter_container{
+        margin-bottom: 20px;
+      }
+      .map_container{
+        width: 700px; 
+        margin: 0 auto;
+        margin-bottom: 20px;
+      }
+      #map{
+        height: 300px;
       }
     </style>
   </head>
   <body>
 
-    <div class="container-fluid">
+    <div class="container">
       <div class="filter_container">
         <div class="row">
           <div class="filter_budget col-sm-4" data-type="budget" data-analysis="between">
-            Budget: 
-            <select>
+            <label for="filter_budget">Budget:</label>
+            <select id="filter_budget">
               <option value="0">All</option>
               <option value="-10000">&lt; 10,000</option>
               <option value="10000-20000">10,000 - 20,000</option>
@@ -39,26 +64,26 @@
             </select>
           </div>
           <div class="filter_start_date col-sm-4" style="display:none;" data-type="start_date" data-analysis="year">
-            Start Year: 
-            <select></select>
+            <label for="filter_start_date">Start Year:</label>
+            <select id="filter_start_date"></select>
           </div>
           <div class="filter_end_date col-sm-4" style="display:none;" data-type="end_date" data-analysis="year">
-            End Year: 
-            <select></select>
+            <label for="filter_end_date">End Year:</label>
+            <select id="filter_end_date"></select>
           </div>
         </div>
         <div class="row">
           <div class="filter_type col-sm-4" style="display:none;" data-type="type">
-            Grant Type: 
-            <select></select>
+            <label for="filter_type">Grant Type:</label>
+            <select id="filter_type"></select>
           </div>
           <div class="filter_topic col-sm-4" style="display:none;" data-type="topic">
-            Topic / Area: 
-            <select></select>
+            <label for="filter_topic">Topic / Area:</label>
+            <select id="filter_topic"></select>
           </div>
           <div class="filter_region col-sm-4" data-type="region" data-analysis="in-string">
-            Region: 
-            <select>
+            <label for="filter_region">Region:</label>
+            <select id="filter_region">
               <option value="0">All</option>
               <option value="Adjara" data-id="1">Adjara</option>
               <option value="Guria" data-id="2">Guria</option>
@@ -77,8 +102,8 @@
       </div>
       
       
-      <div class="map_container" style="width: 700px; margin: 0 auto;">
-        <div id="map" style="height: 300px;">
+      <div class="map_container">
+        <div id="map">
         </div>
       </div>      
       
@@ -130,10 +155,14 @@
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="js/datatables.js"></script>
     <script>
-      var json_data, shape_data, data_table, map;
+      var json_data, shape_data, data_table, map, choropleth_layer, popup;
       var region_ids = [1,2,3,4,5,6,7,8,9,11,32];
+      var no_data_color = "#999";
       
-      
+        /***************************************************/
+        /* map methods */
+        /***************************************************/
+        
         // get the color to show on the map
         function get_map_color(budget) {
           return budget > 1000000 ? '#006d2c' :
@@ -147,13 +176,55 @@
         // create the map cloropleth map style
         function map_style(feature) {
           return {
-              fillColor: get_map_color(feature.properties.budget),
+              fillColor: feature.properties.id == 0 ? no_data_color : get_map_color(feature.properties.budget),
               weight: 2,
               opacity: 1,
               color: 'white',
-              fillOpacity: 0.9
+              fillOpacity: 0.8
           };
         }
+
+        // highlight map feature on rollover
+        function highlightFeature(e) {
+          var layer = e.target;
+          if (e.target.feature.properties.id > 0){
+            layer.setStyle({
+                weight: 5,
+                color: 'white',
+                fillOpacity: 0.9
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera) {
+              layer.bringToFront();
+            }
+
+            popup.update(layer.feature.properties);
+          }
+        }
+        
+        // reset the highlight
+        function resetHighlight(e) {
+          choropleth_layer.resetStyle(e.target);
+          popup.update();
+        }       
+        
+        // zoom into region
+        function zoomToFeature(e) {
+          map.fitBounds(e.target.getBounds());
+        }         
+        
+        // apply listeners to each region in map 
+        function onEachFeature(feature, layer) {
+          layer.on({
+              mouseover: highlightFeature,
+              mouseout: resetHighlight,
+              click: zoomToFeature
+          });
+        }
+        
+        /***************************************************/
+        /* update filters, table, map */
+        /***************************************************/
 
         // update the data table with the provided data
         function update_data_table(data){
@@ -200,14 +271,18 @@
           var region_name, region_data, region_budget;
           
           $.each(region_ids, function(index, region_id){
-            regions[region_id] = {projects: 0, budget: 0};
+            regions[region_id] = {projects: 0, budget: 0, name: ''};
             
             // reset budget
             region_budget = 0;
             
             // get the value (region name) for this id
             region_name = $('.filter_region select option[data-id="' + region_id + '"]').val();
+
+            // save the name
+            regions[region_id].name = region_name;
             
+            // pull out the data for this region
             region_data = $.grep(data, function( item, i ) { return item.region.indexOf(region_name) != -1});
             
             if (region_data.length > 0){
@@ -221,6 +296,7 @@
                 region_budget += this;
               });              
               regions[region_id].budget = region_budget;
+              
             }
             
           });          
@@ -234,16 +310,27 @@
           var region_totals = compute_region_totals(data);
           
           $.each(shapes, function(index, shape){
-            data_item = region_totals[shape.properties.id];
-            
-            shape.properties['budget'] = data_item.budget;
-            shape.properties['projects'] = data_item.projects;
+            if (shape.properties.id > 0){
+              data_item = region_totals[shape.properties.id];
+              
+              shape.properties['budget'] = data_item.budget;
+              shape.properties['projects'] = data_item.projects;
+              shape.properties['name'] = data_item.name;
+            }
           });
         }
         
 
         // update the datatable and filters using the data provided
         function refresh_data(data){
+          // update the map with the shapes
+          merge_shape_budget_data(shape_data, data)
+          if (choropleth_layer != undefined){
+            // remove the previous layer  
+            map.removeLayer(choropleth_layer);
+          }
+          choropleth_layer = L.geoJson(shape_data, {style: map_style, onEachFeature: onEachFeature}).addTo(map);
+          
           // update the data table with the new data
           update_data_table(data);
 
@@ -259,7 +346,9 @@
       $(document).ready(function(){
 
 
-        // special sorts
+        /***************************************************/
+        /* special tabl sorts */
+        /***************************************************/
         jQuery.extend( jQuery.fn.dataTableExt.oSort, {
             "formatted-num-pre": function ( a ) {
                 a = (a === "-" || a === "") ? 0 : a.replace( /[^\d\-\.]/g, "" );
@@ -290,6 +379,9 @@
 
 
 
+        /***************************************************/
+        /* load map and data json */
+        /***************************************************/
         
         // get the shape json data
         $.getJSON( "./data/regions.json", function( shapes ) {
@@ -306,7 +398,7 @@
           // add legend
           var legend = L.control({position: 'bottomleft'});
           legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend'),
+            var div = L.DomUtil.create('div', 'popup legend'),
                 grades = [0, 10000, 50000, 100000, 500000, 1000000],
                 labels = [];
             // loop through our density intervals and generate a label with a colored square for each interval
@@ -318,7 +410,23 @@
             return div;
           };
           legend.addTo(map);
-          
+
+          // add popup
+          popup = L.control();
+          popup.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this.update();
+            return this._div;
+          };
+          // method that we will use to update the control based on feature properties passed
+          popup.update = function (props) {
+            this._div.innerHTML = '<h4>Region Summary</h4>' +  
+                (props ? '<b>' + props.name + '</b>' + 
+                          '<br><b>Projects:</b> ' + numeral(props.projects).format('0,0') + 
+                          '<br><b>Total Budget:</b> ' + numeral(props.budget).format('$0,0.00')
+                : 'Hover over a region');
+          };
+          popup.addTo(map);          
           
           // get the json data and then load the page
           $.getJSON( "./data/data.json", function( data ) {
@@ -328,6 +436,7 @@
             data_table = $('#data_table').dataTable({
               "sPaginationType": "bs_normal",
               "bProcessing": true,
+              "bSortClasses": false,
               "iDisplayLength": 20,
               "aLengthMenu": [[20, 40, 60, 80], [20, 40, 60, 80]],
               "aoColumns": [
@@ -346,10 +455,6 @@
             });
 
 
-            // load the map with the shapes
-            merge_shape_budget_data(shape_data, json_data)
-            L.geoJson(shape_data, {style: map_style}).addTo(map);
-            
             // load the data into the table and load the filters
             refresh_data(json_data);          
 
