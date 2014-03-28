@@ -12,31 +12,52 @@
   <body>
 
     <div class="container-fluid">
-      <div class="filter_container row">
-        <div class="filter_budget col-sm-2" data-type="budget" data-analysis="between">
-          Budget: 
-          <select>
-            <option value="0">All</option>
-            <option value="-10000">&lt; 10,000</option>
-            <option value="10000-20000">10,000 - 20,000</option>
-            <option value="20000-">&gt; 20,000</option>
-          </select>
+      <div class="filter_container">
+        <div class="row">
+          <div class="filter_budget col-sm-4" data-type="budget" data-analysis="between">
+            Budget: 
+            <select>
+              <option value="0">All</option>
+              <option value="-10000">&lt; 10,000</option>
+              <option value="10000-20000">10,000 - 20,000</option>
+              <option value="20000-">&gt; 20,000</option>
+            </select>
+          </div>
+          <div class="filter_start_date col-sm-4" style="display:none;" data-type="start_date" data-analysis="year">
+            Start Year: 
+            <select></select>
+          </div>
+          <div class="filter_end_date col-sm-4" style="display:none;" data-type="end_date" data-analysis="year">
+            End Year: 
+            <select></select>
+          </div>
         </div>
-        <div class="filter_start_date col-sm-2" style="display:none;" data-type="start_date" data-analysis="year">
-          Start Year: 
-          <select></select>
-        </div>
-        <div class="filter_end_date col-sm-2" style="display:none;" data-type="end_date" data-analysis="year">
-          End Year: 
-          <select></select>
-        </div>
-        <div class="filter_type col-sm-3" style="display:none;" data-type="type">
-          Grant Type: 
-          <select></select>
-        </div>
-        <div class="filter_topic col-sm-3" style="display:none;" data-type="topic">
-          Topic / Area: 
-          <select></select>
+        <div class="row">
+          <div class="filter_type col-sm-4" style="display:none;" data-type="type">
+            Grant Type: 
+            <select></select>
+          </div>
+          <div class="filter_topic col-sm-4" style="display:none;" data-type="topic">
+            Topic / Area: 
+            <select></select>
+          </div>
+          <div class="filter_budget col-sm-4" data-type="region" data-analysis="in-string">
+            Region: 
+            <select>
+              <option value="0">All</option>
+              <option value="Adjara" data_id="1">Adjara</option>
+              <option value="Guria" data_id="2">Guria</option>
+              <option value="Imereti" data_id="3">Imereti</option>
+              <option value="Kakheti" data_id="4">Kakheti</option>
+              <option value="Kvemo Kartli" data_id="5">Kvemo Kartli</option>
+              <option value="Mtskheta-Mtianeti" data_id="6">Mtskheta-Mtianeti</option>
+              <option value="Racha-Lechkumi / Kvemo Svaneti" data_id="7">Racha-Lechkumi / Kvemo Svaneti</option>
+              <option value="Samegrelo / Zemo Svaneti" data_id="8">Samegrelo / Zemo Svaneti</option>
+              <option value="Samtskhe-Javakheti" data_id="9">Samtskhe-Javakheti</option>
+              <option value="Shida Kartli" data_id="10">Shida Kartli</option>
+              <option value="Tbilisi" data_id="11">Tbilisi</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="map">
@@ -186,6 +207,7 @@
             "aoColumns": [
                 { "mData": "grantee" },
                 { "mData": "title" },
+                { "mData": "desc" },
                 { "mData": "budget", "sType": "formatted-num", 
                     "mRender": function ( data, type, full ) {return numeral(data).format('$0,0.00');}  
                 },
@@ -193,7 +215,6 @@
                 { "mData": "end_date", "sType": "us_date" },
                 { "mData": "type" },
                 { "mData": "topic" },
-                { "mData": "desc" },
                 { "mData": "region" }
             ]
           });
@@ -241,6 +262,10 @@
                   } else if ($(this)[2] != undefined && $(this)[2] == 'year'){
                     // only compare the year of the date
                     test = test && item[$(this)[0]].split('/')[2] == $(this)[1];
+                    
+                  } else if ($(this)[2] != undefined && $(this)[2] == 'in-string'){
+                    // see if the value is anywhere in the string
+                    test = test && item[$(this)[0]].indexOf($(this)[1]) != -1;
                     
                   }else{
                     test = test && item[$(this)[0]] == $(this)[1];
