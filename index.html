@@ -242,26 +242,28 @@
 
         // reload the list that has the class name of 'filter_key', where key is passed in
         function reload_select_list(key, is_date, data){
-          var objs;
-          if (is_date){
-            objs = $.map(data, function(item,i){return item[key].split('/')[2]});
-          }else {
-            objs = $.map(data, function(item,i){return item[key]});
-          }
-          var uniq_objs = unique(objs).sort();
           var existing_value = $('.filter_' + key + ' select').val();
-          $('.filter_' + key + ' select').empty();
-          $('.filter_' + key + ' select')
-             .append($("<option></option>")
-             .attr("value",'0')
-             .text('All')); 
-          $.each(uniq_objs, function(index, value) {   
-               $('.filter_' + key + ' select')
-                   .append($("<option></option>")
-                   .attr("value",value)
-                   .text(value)); 
-          });
-          $('.filter_' + key + ' select').val(existing_value);
+//          if (existing_value == undefined || existing_value == '0'){
+            var objs;
+            if (is_date){
+              objs = $.map(data, function(item,i){return item[key].split('/')[2]});
+            }else {
+              objs = $.map(data, function(item,i){return item[key]});
+            }
+            var uniq_objs = unique(objs).sort();
+            $('.filter_' + key + ' select').empty();
+            $('.filter_' + key + ' select')
+               .append($("<option></option>")
+               .attr("value",'0')
+               .text('All')); 
+            $.each(uniq_objs, function(index, value) {   
+                 $('.filter_' + key + ' select')
+                     .append($("<option></option>")
+                     .attr("value",value)
+                     .text(value)); 
+            });
+            $('.filter_' + key + ' select').val(existing_value);
+//          }
           $('.filter_' + key + '').show();
         }
 
@@ -471,7 +473,7 @@
           // - then filter the data
           var filters = [];
           // for each select box, get filter value if one is selected
-          $(this).parent().parent().find('select').each(function(){
+          $('.filter_container select').each(function(){
             if ($(this).val() != "0"){
               filters.push([$(this).parent().data('type'), $(this).val(), $(this).parent().data('analysis')]);
             }
@@ -502,12 +504,11 @@
                 } else if ($(this)[2] != undefined && $(this)[2] == 'year'){
                   // only compare the year of the date
                   test = test && item[$(this)[0]].split('/')[2] == $(this)[1];
-                  
                 } else if ($(this)[2] != undefined && $(this)[2] == 'in-string'){
                   // see if the value is anywhere in the string
                   test = test && item[$(this)[0]].indexOf($(this)[1]) != -1;
-                  
                 }else{
+                  // do basic == comparison
                   test = test && item[$(this)[0]] == $(this)[1];
                 }
               });
