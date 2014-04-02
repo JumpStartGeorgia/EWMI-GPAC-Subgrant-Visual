@@ -81,7 +81,7 @@
             <label for="filter_topic">Topic / Area:</label>
             <select id="filter_topic"></select>
           </div>
-          <div class="filter_region col-sm-4" data-type="region" data-analysis="in-string">
+          <div class="filter_region col-sm-4" data-type="budget_location" data-analysis="in-string">
             <label for="filter_region">Region:</label>
             <select id="filter_region">
               <option value="0">All</option>
@@ -500,6 +500,7 @@
           if (filters.length == 0){
             filter_data = json_data;
           }else{
+            console.log(filters);
             filter_data = $.grep(json_data, function( item, i ) {
               var test = true;
               $.each(filters, function(index, filter) {   
@@ -521,7 +522,7 @@
                   test = test && item[filter[0]].$t.split('/')[2] == filter[1];
                 } else if (filter[2] != undefined && filter[2] == 'in-string'){
                   // see if the value is anywhere in the string
-                  test = test && item[filter[0]].$t.indexOf(filter[0]) != -1;
+                  test = test && item[filter[0]].$t.indexOf(filter[1]) != -1;
                 }else{
                   // do basic == comparison
                   test = test && item[filter[0]].$t == filter[1];
