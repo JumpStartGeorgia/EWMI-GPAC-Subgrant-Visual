@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="css/datatables.css" />
     <title>EWMI G-PAC Sub-Grants</title>
-    
+
+    <style>/* datatable bootstrap styles */
+div.dataTables_length label{float:left;text-align:left}div.dataTables_length select{width:75px}div.dataTables_filter label{float:right}div.dataTables_info{padding-top:26px}div.dataTables_paginate{float:right;margin:0}table.table{clear:both;margin-bottom:6px !important;max-width:none !important}table.table thead .sorting,table.table thead .sorting_asc,table.table thead .sorting_desc,table.table thead .sorting_asc_disabled,table.table thead .sorting_desc_disabled{cursor:pointer;*cursor:hand}table.table thead .sorting{background:url('./images/sort_both.png') no-repeat center right}table.table thead .sorting_asc{background:url('./images/sort_asc.png') no-repeat center right}table.table thead .sorting_desc{background:url('./images/sort_desc.png') no-repeat center right}table.table thead .sorting_asc_disabled{background:url('./images/sort_asc_disabled.png') no-repeat center right}table.table thead .sorting_desc_disabled{background:url('./images/sort_desc_disabled.png') no-repeat center right}table.dataTable th:active{outline:0}div.dataTables_scrollHead table{margin-bottom:0 !important;border-bottom-left-radius:0;border-bottom-right-radius:0}div.dataTables_scrollHead table thead tr:last-child th:first-child,div.dataTables_scrollHead table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.dataTables_scrollBody table{border-top:0;margin-bottom:0 !important}div.dataTables_scrollBody tbody tr:first-child th,div.dataTables_scrollBody tbody tr:first-child td{border-top:0}div.dataTables_scrollFoot table{border-top:0}.table tbody tr.active td,.table tbody tr.active th{background-color:#08C;color:white}.table tbody tr.active:hover td,.table tbody tr.active:hover th{background-color:#0075b0 !important}.table-striped tbody tr.active:nth-child(odd) td,.table-striped tbody tr.active:nth-child(odd) th{background-color:#017ebc}table.DTTT_selectable tbody tr{cursor:pointer;*cursor:hand}div.DTTT .btn{color:#333 !important;font-size:12px}div.DTTT .btn:hover{text-decoration:none !important}ul.DTTT_dropdown.dropdown-menu a{color:#333 !important}ul.DTTT_dropdown.dropdown-menu li:hover a{background-color:#08c;color:white !important}div.DTTT_print_info.modal{height:150px;margin-top:-75px;text-align:center}div.DTTT_print_info h6{font-weight:normal;font-size:28px;line-height:28px;margin:1em}div.DTTT_print_info p{font-size:14px;line-height:20px}div.DTFC_LeftHeadWrapper table,div.DTFC_LeftFootWrapper table,table.DTFC_Cloned tr.even{background-color:white}div.DTFC_LeftHeadWrapper table{margin-bottom:0 !important;border-top-right-radius:0 !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftHeadWrapper table thead tr:last-child th:first-child,div.DTFC_LeftHeadWrapper table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftBodyWrapper table{border-top:0;margin-bottom:0 !important}div.DTFC_LeftBodyWrapper tbody tr:first-child th,div.DTFC_LeftBodyWrapper tbody tr:first-child td{border-top:0}div.DTFC_LeftFootWrapper table{border-top:0}
+    </style>    
     <style>
       .popup {
         padding: 6px 8px;
@@ -44,7 +46,7 @@
         margin: 0 auto;
         margin-bottom: 20px;
       }
-      #map{
+      #map_impl, #map_grantee{
         height: 330px;
       }
       
@@ -136,7 +138,17 @@
       
       
       <div class="map_container">
-        <div id="map">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#pane_map_impl" data-toggle="tab" data-type="impl">Implementation Location Summary Map</a></li>
+          <li><a href="#pane_map_grantee" data-toggle="tab" data-type="grantee">Grantee Location Summary Map</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="pane_map_impl">
+            <div id="map_impl"></div>
+          </div>
+          <div class="tab-pane fade" id="pane_map_grantee">
+            <div id="map_grantee"></div>
+          </div>
         </div>
       </div>      
       
@@ -189,9 +201,32 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
     <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="js/datatables.js"></script>
+    <script type="text/javascript">/* datatable bootstrap js */
+      $.extend(true,$.fn.dataTable.defaults,{"sDom":"<'row'<'col-sm-12'<'pull-right'f><'pull-left'l><'text-center'<'budget_total'>>r<'clearfix'>>>t<'row'<'col-sm-12'<'pull-left'i><'pull-right'p><'clearfix'>>>","sPaginationType":"bs_normal","oLanguage":{"sLengthMenu":"Show _MENU_ Rows","sSearch":""}});$.extend($.fn.dataTableExt.oStdClasses,{"sWrapper":"dataTables_wrapper form-inline"});
+      $.fn.dataTableExt.oApi.fnPagingInfo=function(oSettings){return{"iStart":oSettings._iDisplayStart,"iEnd":oSettings.fnDisplayEnd(),"iLength":oSettings._iDisplayLength,"iTotal":oSettings.fnRecordsTotal(),"iFilteredTotal":oSettings.fnRecordsDisplay(),"iPage":oSettings._iDisplayLength===-1?0:Math.ceil(oSettings._iDisplayStart/oSettings._iDisplayLength),"iTotalPages":oSettings._iDisplayLength===-1?0:Math.ceil(oSettings.fnRecordsDisplay()/oSettings._iDisplayLength)}};
+      $.extend($.fn.dataTableExt.oPagination,{"bs_normal":{"fnInit":function(oSettings,nPaging,fnDraw){var oLang=oSettings.oLanguage.oPaginate;var fnClickHandler=function(e){e.preventDefault();if(oSettings.oApi._fnPageChange(oSettings,e.data.action))fnDraw(oSettings)};$(nPaging).append('<ul class="pagination">'+'<li class="prev disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;'+oLang.sPrevious+"</a></li>"+'<li class="next disabled"><a href="#">'+oLang.sNext+'&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></li>'+
+      "</ul>");var els=$("a",nPaging);$(els[0]).bind("click.DT",{action:"previous"},fnClickHandler);$(els[1]).bind("click.DT",{action:"next"},fnClickHandler)},"fnUpdate":function(oSettings,fnDraw){var iListLength=5;var oPaging=oSettings.oInstance.fnPagingInfo();var an=oSettings.aanFeatures.p;var i,ien,j,sClass,iStart,iEnd,iHalf=Math.floor(iListLength/2);if(oPaging.iTotalPages<iListLength){iStart=1;iEnd=oPaging.iTotalPages}else if(oPaging.iPage<=iHalf){iStart=1;iEnd=iListLength}else if(oPaging.iPage>=oPaging.iTotalPages-
+      iHalf){iStart=oPaging.iTotalPages-iListLength+1;iEnd=oPaging.iTotalPages}else{iStart=oPaging.iPage-iHalf+1;iEnd=iStart+iListLength-1}for(i=0,ien=an.length;i<ien;i++){$("li:gt(0)",an[i]).filter(":not(:last)").remove();for(j=iStart;j<=iEnd;j++){sClass=j==oPaging.iPage+1?'class="active"':"";$("<li "+sClass+'><a href="#">'+j+"</a></li>").insertBefore($("li:last",an[i])[0]).bind("click",function(e){e.preventDefault();if(oSettings.oApi._fnPageChange(oSettings,parseInt($("a",this).text(),10)-1))fnDraw(oSettings)})}if(oPaging.iPage===
+      0)$("li:first",an[i]).addClass("disabled");else $("li:first",an[i]).removeClass("disabled");if(oPaging.iPage===oPaging.iTotalPages-1||oPaging.iTotalPages===0)$("li:last",an[i]).addClass("disabled");else $("li:last",an[i]).removeClass("disabled")}}},"bs_two_button":{"fnInit":function(oSettings,nPaging,fnCallbackDraw){var oLang=oSettings.oLanguage.oPaginate;var oClasses=oSettings.oClasses;var fnClickHandler=function(e){if(oSettings.oApi._fnPageChange(oSettings,e.data.action))fnCallbackDraw(oSettings)};
+      var sAppend='<ul class="pagination">'+'<li class="prev"><a href="#" class="'+oSettings.oClasses.sPagePrevDisabled+'" tabindex="'+oSettings.iTabIndex+'" role="button"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;'+oLang.sPrevious+"</a></li>"+'<li class="next"><a href="#" class="'+oSettings.oClasses.sPageNextDisabled+'" tabindex="'+oSettings.iTabIndex+'" role="button">'+oLang.sNext+'&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></li>'+"</ul>";$(nPaging).append(sAppend);
+      var els=$("a",nPaging);var nPrevious=els[0],nNext=els[1];oSettings.oApi._fnBindAction(nPrevious,{action:"previous"},fnClickHandler);oSettings.oApi._fnBindAction(nNext,{action:"next"},fnClickHandler);if(!oSettings.aanFeatures.p){nPaging.id=oSettings.sTableId+"_paginate";nPrevious.id=oSettings.sTableId+"_previous";nNext.id=oSettings.sTableId+"_next";nPrevious.setAttribute("aria-controls",oSettings.sTableId);nNext.setAttribute("aria-controls",oSettings.sTableId)}},"fnUpdate":function(oSettings,fnCallbackDraw){if(!oSettings.aanFeatures.p)return;
+      var oPaging=oSettings.oInstance.fnPagingInfo();var oClasses=oSettings.oClasses;var an=oSettings.aanFeatures.p;var nNode;for(var i=0,iLen=an.length;i<iLen;i++){if(oPaging.iPage===0)$("li:first",an[i]).addClass("disabled");else $("li:first",an[i]).removeClass("disabled");if(oPaging.iPage===oPaging.iTotalPages-1||oPaging.iTotalPages===0)$("li:last",an[i]).addClass("disabled");else $("li:last",an[i]).removeClass("disabled")}}},"bs_four_button":{"fnInit":function(oSettings,nPaging,fnCallbackDraw){var oLang=
+      oSettings.oLanguage.oPaginate;var oClasses=oSettings.oClasses;var fnClickHandler=function(e){e.preventDefault();if(oSettings.oApi._fnPageChange(oSettings,e.data.action))fnCallbackDraw(oSettings)};$(nPaging).append('<ul class="pagination">'+'<li class="disabled"><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPageFirst+'"><span class="glyphicon glyphicon-backward"></span>&nbsp;'+oLang.sFirst+"</a></li>"+'<li class="disabled"><a href="#" tabindex="'+oSettings.iTabIndex+
+      '" class="'+oClasses.sPageButton+" "+oClasses.sPagePrevious+'"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;'+oLang.sPrevious+"</a></li>"+'<li><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPageNext+'">'+oLang.sNext+'&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></li>'+'<li><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPageLast+'">'+oLang.sLast+'&nbsp;<span class="glyphicon glyphicon-forward"></span></a></li>'+
+      "</ul>");var els=$("a",nPaging);var nFirst=els[0],nPrev=els[1],nNext=els[2],nLast=els[3];oSettings.oApi._fnBindAction(nFirst,{action:"first"},fnClickHandler);oSettings.oApi._fnBindAction(nPrev,{action:"previous"},fnClickHandler);oSettings.oApi._fnBindAction(nNext,{action:"next"},fnClickHandler);oSettings.oApi._fnBindAction(nLast,{action:"last"},fnClickHandler);if(!oSettings.aanFeatures.p){nPaging.id=oSettings.sTableId+"_paginate";nFirst.id=oSettings.sTableId+"_first";nPrev.id=oSettings.sTableId+"_previous";
+      nNext.id=oSettings.sTableId+"_next";nLast.id=oSettings.sTableId+"_last"}},"fnUpdate":function(oSettings,fnCallbackDraw){if(!oSettings.aanFeatures.p)return;var oPaging=oSettings.oInstance.fnPagingInfo();var oClasses=oSettings.oClasses;var an=oSettings.aanFeatures.p;var nNode;for(var i=0,iLen=an.length;i<iLen;i++){if(oPaging.iPage===0){$("li:eq(0)",an[i]).addClass("disabled");$("li:eq(1)",an[i]).addClass("disabled")}else{$("li:eq(0)",an[i]).removeClass("disabled");$("li:eq(1)",an[i]).removeClass("disabled")}if(oPaging.iPage===
+      oPaging.iTotalPages-1||oPaging.iTotalPages===0){$("li:eq(2)",an[i]).addClass("disabled");$("li:eq(3)",an[i]).addClass("disabled")}else{$("li:eq(2)",an[i]).removeClass("disabled");$("li:eq(3)",an[i]).removeClass("disabled")}}}},"bs_full":{"fnInit":function(oSettings,nPaging,fnCallbackDraw){var oLang=oSettings.oLanguage.oPaginate;var oClasses=oSettings.oClasses;var fnClickHandler=function(e){if(oSettings.oApi._fnPageChange(oSettings,e.data.action))fnCallbackDraw(oSettings)};$(nPaging).append('<ul class="pagination">'+
+      '<li class="disabled"><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPageFirst+'">'+oLang.sFirst+"</a></li>"+'<li class="disabled"><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPagePrevious+'">'+oLang.sPrevious+"</a></li>"+'<li><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+oClasses.sPageButton+" "+oClasses.sPageNext+'">'+oLang.sNext+"</a></li>"+'<li><a href="#" tabindex="'+oSettings.iTabIndex+'" class="'+
+      oClasses.sPageButton+" "+oClasses.sPageLast+'">'+oLang.sLast+"</a></li>"+"</ul>");var els=$("a",nPaging);var nFirst=els[0],nPrev=els[1],nNext=els[2],nLast=els[3];oSettings.oApi._fnBindAction(nFirst,{action:"first"},fnClickHandler);oSettings.oApi._fnBindAction(nPrev,{action:"previous"},fnClickHandler);oSettings.oApi._fnBindAction(nNext,{action:"next"},fnClickHandler);oSettings.oApi._fnBindAction(nLast,{action:"last"},fnClickHandler);if(!oSettings.aanFeatures.p){nPaging.id=oSettings.sTableId+"_paginate";
+      nFirst.id=oSettings.sTableId+"_first";nPrev.id=oSettings.sTableId+"_previous";nNext.id=oSettings.sTableId+"_next";nLast.id=oSettings.sTableId+"_last"}},"fnUpdate":function(oSettings,fnCallbackDraw){if(!oSettings.aanFeatures.p)return;var oPaging=oSettings.oInstance.fnPagingInfo();var iPageCount=$.fn.dataTableExt.oPagination.iFullNumbersShowPages;var iPageCountHalf=Math.floor(iPageCount/2);var iPages=Math.ceil(oSettings.fnRecordsDisplay()/oSettings._iDisplayLength);var iCurrentPage=Math.ceil(oSettings._iDisplayStart/
+      oSettings._iDisplayLength)+1;var sList="";var iStartButton,iEndButton,i,iLen;var oClasses=oSettings.oClasses;var anButtons,anStatic,nPaginateList,nNode;var an=oSettings.aanFeatures.p;var fnBind=function(j){oSettings.oApi._fnBindAction(this,{"page":j+iStartButton-1},function(e){if(oSettings.oApi._fnPageChange(oSettings,e.data.page))fnCallbackDraw(oSettings);e.preventDefault()})};if(oSettings._iDisplayLength===-1){iStartButton=1;iEndButton=1;iCurrentPage=1}else if(iPages<iPageCount){iStartButton=1;
+      iEndButton=iPages}else if(iCurrentPage<=iPageCountHalf){iStartButton=1;iEndButton=iPageCount}else if(iCurrentPage>=iPages-iPageCountHalf){iStartButton=iPages-iPageCount+1;iEndButton=iPages}else{iStartButton=iCurrentPage-Math.ceil(iPageCount/2)+1;iEndButton=iStartButton+iPageCount-1}for(i=iStartButton;i<=iEndButton;i++)sList+=iCurrentPage!==i?'<li><a tabindex="'+oSettings.iTabIndex+'">'+oSettings.fnFormatNumber(i)+"</a></li>":'<li class="active"><a tabindex="'+oSettings.iTabIndex+'">'+oSettings.fnFormatNumber(i)+
+      "</a></li>";for(i=0,iLen=an.length;i<iLen;i++){nNode=an[i];if(!nNode.hasChildNodes())continue;$("li:gt(1)",an[i]).filter(":not(li:eq(-2))").filter(":not(li:eq(-1))").remove();if(oPaging.iPage===0){$("li:eq(0)",an[i]).addClass("disabled");$("li:eq(1)",an[i]).addClass("disabled")}else{$("li:eq(0)",an[i]).removeClass("disabled");$("li:eq(1)",an[i]).removeClass("disabled")}if(oPaging.iPage===oPaging.iTotalPages-1||oPaging.iTotalPages===0){$("li:eq(-1)",an[i]).addClass("disabled");$("li:eq(-2)",an[i]).addClass("disabled")}else{$("li:eq(-1)",
+      an[i]).removeClass("disabled");$("li:eq(-2)",an[i]).removeClass("disabled")}$(sList).insertBefore("li:eq(-2)",an[i]).bind("click",function(e){e.preventDefault();if(oSettings.oApi._fnPageChange(oSettings,parseInt($("a",this).text(),10)-1))fnCallbackDraw(oSettings)})}}}});
+      if($.fn.DataTable.TableTools){$.extend(true,$.fn.DataTable.TableTools.classes,{"container":"DTTT btn-group","buttons":{"normal":"btn","disabled":"disabled"},"collection":{"container":"DTTT_dropdown dropdown-menu","buttons":{"normal":"","disabled":"disabled"}},"print":{"info":"DTTT_print_info modal"},"select":{"row":"active"}});$.extend(true,$.fn.DataTable.TableTools.DEFAULTS.oTags,{"collection":{"container":"ul","button":"li","liner":"a"}})};
+    </script>
     <script>
-      var json_data, shape_data, data_table, map, choropleth_layer, popup;
+      var json_data, data_table, shape_data, map_impl, map_grantee, choropleth_layer_impl, choropleth_layer_grantee, popup_impl, popup_grantee;
       var region_ids = [1,2,3,4,5,6,7,8,9,11,32];
       var no_data_color = "#999";
       var json_keys = {
@@ -211,7 +246,6 @@
         /***************************************************/
         /* map methods */
         /***************************************************/
-        
         // get the color to show on the map
         function get_map_color(budget) {
           return budget > 1000000 ? '#006d2c' :
@@ -222,10 +256,14 @@
                                     '#edf8fb';
         }
 
+        
+        /***************************************************/
+        /* implimentation map functions */
+
         // create the map cloropleth map style
-        function map_style(feature) {
+        function map_style_impl(feature) {
           return {
-              fillColor: feature.properties.id == 0 ? no_data_color : get_map_color(feature.properties.budget),
+              fillColor: feature.properties.id == 0 ? no_data_color : get_map_color(feature.properties.impl_budget),
               weight: 2,
               opacity: 1,
               color: 'white',
@@ -234,7 +272,7 @@
         }
 
         // highlight map feature on rollover
-        function highlightFeature(e) {
+        function highlightFeature_impl(e) {
           var layer = e.target;
           if (e.target.feature.properties.id > 0){
             layer.setStyle({
@@ -247,29 +285,81 @@
               layer.bringToFront();
             }
 
-            popup.update(layer.feature.properties);
+            popup_impl.update(layer.feature.properties);
           }
         }
         
         // reset the highlight
-        function resetHighlight(e) {
-          choropleth_layer.resetStyle(e.target);
-          popup.update();
+        function resetHighlight_impl(e) {
+          choropleth_layer_impl.resetStyle(e.target);
+          popup_impl.update();
         }       
         
         // zoom into region
-        function zoomToFeature(e) {
-//          map.fitBounds(e.target.getBounds());
+        function zoomToFeature_impl(e) {
           // select this region in the list
           $('select#filter_impl_location option[data-id="' + e.target.feature.properties.id.toString() + '"]').prop('selected', true).trigger('change');
         }         
         
         // apply listeners to each region in map 
-        function onEachFeature(feature, layer) {
+        function onEachFeature_impl(feature, layer) {
           layer.on({
-              mouseover: highlightFeature,
-              mouseout: resetHighlight,
-              click: zoomToFeature
+              mouseover: highlightFeature_impl,
+              mouseout: resetHighlight_impl,
+              click: zoomToFeature_impl
+          });
+        }
+
+        /***************************************************/
+        /* grantee map functions */
+
+        // create the map cloropleth map style
+        function map_style_grantee(feature) {
+          return {
+              fillColor: feature.properties.id == 0 ? no_data_color : get_map_color(feature.properties.grantee_budget),
+              weight: 2,
+              opacity: 1,
+              color: 'white',
+              fillOpacity: 0.8
+          };
+        }
+
+        // highlight map feature on rollover
+        function highlightFeature_grantee(e) {
+          var layer = e.target;
+          if (e.target.feature.properties.id > 0){
+            layer.setStyle({
+                weight: 5,
+                color: 'white',
+                fillOpacity: 0.9
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera) {
+              layer.bringToFront();
+            }
+
+            popup_grantee.update(layer.feature.properties);
+          }
+        }
+        
+        // reset the highlight
+        function resetHighlight_grantee(e) {
+          choropleth_layer_grantee.resetStyle(e.target);
+          popup_grantee.update();
+        }       
+        
+        // zoom into region
+        function zoomToFeature_grantee(e) {
+          // select this region in the list
+          $('select#filter_grantee_location option[data-id="' + e.target.feature.properties.id.toString() + '"]').prop('selected', true).trigger('change');
+        }         
+        
+        // apply listeners to each region in map 
+        function onEachFeature_grantee(feature, layer) {
+          layer.on({
+              mouseover: highlightFeature_grantee,
+              mouseout: resetHighlight_grantee,
+              click: zoomToFeature_grantee
           });
         }
         
@@ -323,8 +413,8 @@
           $('.filter_' + key + '').show();
         }
 
-        // compute the budget totals and number of projects in each region
-        function compute_region_totals(data){
+        // compute the implementation budget totals and number of projects in each region
+        function compute_impl_region_totals(data){
           regions = {};
           var region_name, region_data, region_budget;
           
@@ -362,6 +452,47 @@
           return regions
         }
         
+
+        // compute the grantee budget totals and number of projects in each region
+        function compute_grantee_region_totals(data){
+          regions = {};
+          var region_name, region_data, region_budget;
+          
+          $.each(region_ids, function(index, region_id){
+            regions[region_id] = {projects: 0, budget: 0, name: ''};
+            
+            // reset budget
+            region_budget = 0;
+            
+            // get the value (region name) for this id
+            region_name = $('.filter_grantee_location select option[data-id="' + region_id + '"]').val();
+
+            // save the name
+            regions[region_id].name = region_name;
+            
+            // pull out the data for this region
+            region_data = $.grep(data, function( item, i ) { return item[json_keys['grantee_location']].$t.indexOf(region_name) != -1});
+
+            if (region_data.length > 0){
+              // data exists
+
+              // - get # of grantees
+              regions[region_id].grantees = region_data.length;
+              
+              // - sum budget
+              $.each($.map(region_data, function(item,i){return item[json_keys['budget']].$t}),function() {
+                region_budget += convert_budget(this);
+              });              
+              regions[region_id].budget = region_budget;
+              
+            }
+            
+          });          
+          
+          return regions
+        }
+        
+
         // compute budget total for current data being displayed
         function compute_budget_total(data){
 
@@ -384,35 +515,58 @@
           $('.table_container .budget_total').html(text);
         }
         
-        // merge the data summary into the shape data so can map choropleth 
-        function merge_shape_budget_data(shapes, data){
+        // merge the data summary into the shape data so can map choropleth of projects
+        function merge_shape_impl_data(shapes, data){
           var data_item;
-          var region_totals = compute_region_totals(data);
+          var region_totals = compute_impl_region_totals(data);
           
           $.each(shapes, function(index, shape){
             if (shape.properties.id > 0){
               data_item = region_totals[shape.properties.id];
               
-              shape.properties['budget'] = data_item.budget;
-              shape.properties['projects'] = data_item.projects;
-              shape.properties['name'] = data_item.name;
+              shape.properties['impl_budget'] = data_item.budget;
+              shape.properties['impl_projects'] = data_item.projects;
+              shape.properties['impl_name'] = data_item.name;
+            }
+          });
+        }
+        
+        // merge the data summary into the shape data so can map choropleth of grantees
+        function merge_shape_grantee_data(shapes, data){
+          var data_item;
+          var region_totals = compute_grantee_region_totals(data);
+          
+          $.each(shapes, function(index, shape){
+            if (shape.properties.id > 0){
+              data_item = region_totals[shape.properties.id];
+              
+              shape.properties['grantee_budget'] = data_item.budget;
+              shape.properties['grantee_grantees'] = data_item.grantees;
+              shape.properties['grantee_name'] = data_item.name;
             }
           });
         }
         
         // update the datatable and filters using the data provided
         function refresh_data(data){
-          // update the map with the shapes
-          merge_shape_budget_data(shape_data, data);
-          
           // compute and show budget total
           compute_budget_total(data);
           
-          if (choropleth_layer != undefined){
+          // update the map with the shapes
+          merge_shape_impl_data(shape_data, data);
+          if (choropleth_layer_impl != undefined){
             // remove the previous layer  
-            map.removeLayer(choropleth_layer);
+            map_impl.removeLayer(choropleth_layer_impl);
           }
-          choropleth_layer = L.geoJson(shape_data, {style: map_style, onEachFeature: onEachFeature}).addTo(map);
+          choropleth_layer_impl = L.geoJson(shape_data, {style: map_style_impl, onEachFeature: onEachFeature_impl}).addTo(map_impl);
+
+          merge_shape_grantee_data(shape_data, data);
+          if (choropleth_layer_grantee != undefined){
+            // remove the previous layer  
+            map_grantee.removeLayer(choropleth_layer_grantee);
+          }
+          choropleth_layer_grantee = L.geoJson(shape_data, {style: map_style_grantee, onEachFeature: onEachFeature_grantee}).addTo(map_grantee);
+          
           
           // update the data table with the new data
           update_data_table(data);
@@ -470,13 +624,14 @@
         $.getJSON( "./data/regions.json", function( shapes ) {
           shape_data = shapes;
           
-          // load the map
     			var url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-          map = L.map('map').setView([42.293564192170095, 43.04443359375,], 7);
+          /***************************************************/
+          // load the implimentation map
+          map_impl = L.map('map_impl').setView([42.293564192170095, 43.04443359375,], 7);
           L.tileLayer(url, {
               maxZoom: 18,
               opacity: 0.5
-          }).addTo(map);
+          }).addTo(map_impl);
           
           // add legend
           var legend = L.control({position: 'bottomleft'});
@@ -492,25 +647,68 @@
             }
             return div;
           };
-          legend.addTo(map);
+          legend.addTo(map_impl);
 
           // add popup
-          popup = L.control();
-          popup.onAdd = function (map) {
+          popup_impl = L.control();
+          popup_impl.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'popup');
             this.update();
             return this._div;
           };
           // method that we will use to update the control based on feature properties passed
-          popup.update = function (props) {
+          popup_impl.update = function (props) {
             this._div.innerHTML = '<h4>Implementation Location Summary</h4>' +  
-                (props ? '<b>' + props.name + '</b>' + 
-                          '<br><b>Projects:</b> ' + numeral(props.projects).format('0,0') + 
-                          '<br><b>Total Budget:</b> ' + numeral(props.budget).format('$0,0.00')
+                (props ? '<b>' + props.impl_name + '</b>' + 
+                          '<br><b>Projects:</b> ' + numeral(props.impl_projects).format('0,0') + 
+                          '<br><b>Total Budget:</b> ' + numeral(props.impl_budget).format('$0,0.00')
                 : 'Hover over a region');
           };
-          popup.addTo(map);          
+          popup_impl.addTo(map_impl);          
+
+          /***************************************************/
+          // load the grantee map
+          map_grantee = L.map('map_grantee').setView([42.293564192170095, 43.04443359375,], 7);
+          L.tileLayer(url, {
+              maxZoom: 18,
+              opacity: 0.5
+          }).addTo(map_grantee);
           
+          // add legend
+          var legend = L.control({position: 'bottomleft'});
+          legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'popup legend'),
+                grades = [0, 10000, 50000, 100000, 500000, 1000000],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + get_map_color(grades[i] + 1) + '"></i> ' +
+                    numeral(grades[i]).format('$0,0') + (grades[i + 1] ? '&ndash;' + numeral(grades[i+1]).format('$0,0') + '<br>' : '+');
+            }
+            return div;
+          };
+          legend.addTo(map_grantee);
+
+          // add popup
+          popup_grantee = L.control();
+          popup_grantee.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'popup');
+            this.update();
+            return this._div;
+          };
+          // method that we will use to update the control based on feature properties passed
+          popup_grantee.update = function (props) {
+            this._div.innerHTML = '<h4>Grantee Location Summary</h4>' +  
+                (props ? '<b>' + props.grantee_name + '</b>' + 
+                          '<br><b>Grantees:</b> ' + numeral(props.grantee_grantees).format('0,0') + 
+                          '<br><b>Total Budget:</b> ' + numeral(props.grantee_budget).format('$0,0.00')
+                : 'Hover over a region');
+          };
+          popup_grantee.addTo(map_grantee);          
+
+          
+          /***************************************************/
           // get the json data and then load the page
           $.getJSON( "https://spreadsheets.google.com/feeds/list/19RqNkt9AlAFFTsQJAIwK605husVRzo0-YtSY7J0S7pU/1567754387/public/values?alt=json", function( data ) {
             json_data = data.feed.entry;
@@ -548,6 +746,15 @@
           });
         });
 
+  
+        // when the tab turns on make the grantee map show properly
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+          if ($(e.target).data('type') == 'grantee' && $(e.target).data('resize') != 'true'){
+            map_grantee._onResize(); 
+            $(e.target).data('resize', 'true');
+          }
+        })
+        
         // register clear filters event
         $('button#reset_filters').click(function(){
           refresh_data(json_data);
