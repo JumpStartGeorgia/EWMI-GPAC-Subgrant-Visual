@@ -7,15 +7,69 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <title>EWMI G-PAC Sub-Grants</title>
+    <title>Supporting Ideas that Matter</title>
 
     <style>/* datatable bootstrap styles */
 div.dataTables_length label{float:left;text-align:left}div.dataTables_length select{width:75px}div.dataTables_filter label{float:right}div.dataTables_info{padding-top:26px}div.dataTables_paginate{float:right;margin:0}table.table{clear:both;margin-bottom:6px !important;max-width:none !important}table.table thead .sorting,table.table thead .sorting_asc,table.table thead .sorting_desc,table.table thead .sorting_asc_disabled,table.table thead .sorting_desc_disabled{cursor:pointer;*cursor:hand}table.table thead .sorting{background:url('./images/sort_both.png') no-repeat center right}table.table thead .sorting_asc{background:url('./images/sort_asc.png') no-repeat center right}table.table thead .sorting_desc{background:url('./images/sort_desc.png') no-repeat center right}table.table thead .sorting_asc_disabled{background:url('./images/sort_asc_disabled.png') no-repeat center right}table.table thead .sorting_desc_disabled{background:url('./images/sort_desc_disabled.png') no-repeat center right}table.dataTable th:active{outline:0}div.dataTables_scrollHead table{margin-bottom:0 !important;border-bottom-left-radius:0;border-bottom-right-radius:0}div.dataTables_scrollHead table thead tr:last-child th:first-child,div.dataTables_scrollHead table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.dataTables_scrollBody table{border-top:0;margin-bottom:0 !important}div.dataTables_scrollBody tbody tr:first-child th,div.dataTables_scrollBody tbody tr:first-child td{border-top:0}div.dataTables_scrollFoot table{border-top:0}.table tbody tr.active td,.table tbody tr.active th{background-color:#08C;color:white}.table tbody tr.active:hover td,.table tbody tr.active:hover th{background-color:#0075b0 !important}.table-striped tbody tr.active:nth-child(odd) td,.table-striped tbody tr.active:nth-child(odd) th{background-color:#017ebc}table.DTTT_selectable tbody tr{cursor:pointer;*cursor:hand}div.DTTT .btn{color:#333 !important;font-size:12px}div.DTTT .btn:hover{text-decoration:none !important}ul.DTTT_dropdown.dropdown-menu a{color:#333 !important}ul.DTTT_dropdown.dropdown-menu li:hover a{background-color:#08c;color:white !important}div.DTTT_print_info.modal{height:150px;margin-top:-75px;text-align:center}div.DTTT_print_info h6{font-weight:normal;font-size:28px;line-height:28px;margin:1em}div.DTTT_print_info p{font-size:14px;line-height:20px}div.DTFC_LeftHeadWrapper table,div.DTFC_LeftFootWrapper table,table.DTFC_Cloned tr.even{background-color:white}div.DTFC_LeftHeadWrapper table{margin-bottom:0 !important;border-top-right-radius:0 !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftHeadWrapper table thead tr:last-child th:first-child,div.DTFC_LeftHeadWrapper table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftBodyWrapper table{border-top:0;margin-bottom:0 !important}div.DTFC_LeftBodyWrapper tbody tr:first-child th,div.DTFC_LeftBodyWrapper tbody tr:first-child td{border-top:0}div.DTFC_LeftFootWrapper table{border-top:0}
-    </style>    
+    </style>   
     <style>
+      .tipsy { font-size: 12px; position: absolute; padding: 5px; z-index: 100000; }
+      .tipsy-inner { background-color: #0c5baa; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+
+      /* Rounded corners */
+      .tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+
+      /* Uncomment for shadow */
+      /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+
+      .tipsy-arrow { position: absolute; width: 0; height: 0; line-height: 0; border: 5px dashed #000; }
+
+      /* Rules to colour arrows */
+      .tipsy-arrow-n { border-bottom-color: #0c5baa; }
+      .tipsy-arrow-s { border-top-color: #0c5baa; }
+      .tipsy-arrow-e { border-left-color: #0c5baa; }
+      .tipsy-arrow-w { border-right-color: #0c5baa; }
+
+      .tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
+        .tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
+        .tipsy-ne .tipsy-arrow { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
+      .tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+        .tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+        .tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
+      .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
+      .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+    </style> 
+    <style>
+      #main_container, .dataTables_wrapper{
+        width: 670px;
+        font-size: 13px;
+      }
+      #filter_container{
+        font-size: 13px;
+      }
+      #filter_container .row{
+        padding-top: 5px;
+      }
+      #filter_container select{
+        width: 100%;
+        background-color: #c6c6c6;
+        color: #000;
+      }
+      #filter_container #reset_btn{
+        text-align: right;
+      }
+      #filter_container #reset_btn #reset_filters{
+        background-color: #e20842;
+        border-color: transparent;
+        font-weight: bold;
+        opacity: 0.8;
+      }
+      #filter_container #reset_btn #reset_filters:hover{
+        opacity: 1;
+      }
       .popup {
         padding: 6px 8px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
+        font: 13px/16px Arial, Helvetica, sans-serif;
         background: white;
         background: rgba(255,255,255,0.8);
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -24,6 +78,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       .popup h4 {
         margin: 0 0 5px;
         color: #777;
+        font-size: 17px;
       }
 
       .legend {
@@ -42,7 +97,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         margin-bottom: 20px;
       }
       .map_container{
-        width: 700px; 
+        width: 670px; 
         margin: 0 auto;
         margin-bottom: 20px;
       }
@@ -50,24 +105,47 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         height: 330px;
       }
       
+      .table_container table td, .table_container table th{
+        font-size: 11px
+      }
+
       .table_container .budget_total{
-        background-color: #006d2c;
+        background-color: #0c5baa;
         color: #fff;
         display: inline-block;
         padding: 5px 10px;
         margin-top: -5px;        
       } 
+      #data_table_length select{
+        background-color: #c6c6c6;
+        color: #000;
+        font-weight: normal;
+      }
       
       #summary{
         padding-bottom: 15px;
         margin-bottom: 30px;
         border-bottom: solid 1px #ccc;
       }
+      
+      .pagination>li>a, .pagination>li>span{
+        color: #0c5baa;
+      }
+
+      .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus{
+        background-color: #0c5baa;
+        border-color: #0c5baa;
+      }
+      
+      .more_link{
+        color: #0c5baa;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
 
-    <div class="container">
+    <div class="container" id="main_container">
       <div class="filter_container">
         <h1>Supporting Ideas that Matter</h1>
         <div id="summary">
@@ -79,77 +157,100 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
           </p>
         </div>
       
-        <div class="row">
-          <div class="filter_budget col-sm-4" data-type="budget" data-analysis="between">
-            <label for="filter_budget">Budget:</label>
-            <select id="filter_budget">
-              <option value="0">All</option>
-              <option value="-10000">&lt; 10,000</option>
-              <option value="10000-20000">10,000 - 20,000</option>
-              <option value="20000-30000">20,000 - 30,000</option>
-              <option value="30000-40000">30,000 - 40,000</option>
-              <option value="40000-50000">40,000 - 50,000</option>
-              <option value="50000-">&gt; 50,000</option>
-            </select>
+        <div id="filter_container">
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="filter_budget">Budget:</label>
+            </div>
+            <div class="filter_budget col-sm-3" data-type="budget" data-analysis="between">
+              <select id="filter_budget">
+                <option value="0">All</option>
+                <option value="-10000">&lt; 10,000</option>
+                <option value="10000-20000">10,000 - 20,000</option>
+                <option value="20000-30000">20,000 - 30,000</option>
+                <option value="30000-40000">30,000 - 40,000</option>
+                <option value="40000-50000">40,000 - 50,000</option>
+                <option value="50000-">&gt; 50,000</option>
+              </select>
+            </div>
+
+            <div class="col-sm-4">
+              <label for="filter_impl_location">Implementation Location:</label>
+            </div>
+            <div class="filter_impl_location col-sm-3" data-type="impl_location" data-analysis="in-string">
+              <select id="filter_impl_location">
+                <option value="0">All</option>
+                <option value="Adjara" data-id="1">Adjara</option>
+                <option value="Guria" data-id="2">Guria</option>
+                <option value="Imereti" data-id="3">Imereti</option>
+                <option value="Kakheti" data-id="4">Kakheti</option>
+                <option value="Kvemo Kartli" data-id="5">Kvemo Kartli</option>
+                <option value="Mtskheta-Mtianeti" data-id="7">Mtskheta-Mtianeti</option>
+                <option value="Racha-Lechkumi / Kvemo Svaneti" data-id="8">Racha-Lechkumi / Kvemo Svaneti</option>
+                <option value="Samegrelo / Zemo Svaneti" data-id="11">Samegrelo / Zemo Svaneti</option>
+                <option value="Samtskhe-Javakheti" data-id="6">Samtskhe-Javakheti</option>
+                <option value="Shida Kartli" data-id="9">Shida Kartli</option>
+                <option value="Tbilisi" data-id="32">Tbilisi</option>
+              </select>
+            </div>
           </div>
-          <div class="filter_start_date col-sm-4" data-type="start_date" data-analysis="year">
-            <label for="filter_start_date">Start Year:</label>
-            <select id="filter_start_date"></select>
+
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="filter_start_date">Start Year:</label>
+            </div>
+            <div class="filter_start_date col-sm-3" data-type="start_date" data-analysis="year">
+              <select id="filter_start_date"></select>
+            </div>
+
+            <div class="col-sm-4">
+              <label for="filter_grantee_location">Grantee Location:</label>
+            </div>
+            <div class="filter_grantee_location col-sm-3" data-type="grantee_location" data-analysis="in-string">
+              <select id="filter_grantee_location">
+                <option value="0">All</option>
+                <option value="Adjara" data-id="1">Adjara</option>
+                <option value="Guria" data-id="2">Guria</option>
+                <option value="Imereti" data-id="3">Imereti</option>
+                <option value="Kakheti" data-id="4">Kakheti</option>
+                <option value="Kvemo Kartli" data-id="5">Kvemo Kartli</option>
+                <option value="Mtskheta-Mtianeti" data-id="7">Mtskheta-Mtianeti</option>
+                <option value="Racha-Lechkumi / Kvemo Svaneti" data-id="8">Racha-Lechkumi / Kvemo Svaneti</option>
+                <option value="Samegrelo / Zemo Svaneti" data-id="11">Samegrelo / Zemo Svaneti</option>
+                <option value="Samtskhe-Javakheti" data-id="6">Samtskhe-Javakheti</option>
+                <option value="Shida Kartli" data-id="9">Shida Kartli</option>
+                <option value="Tbilisi" data-id="32">Tbilisi</option>
+              </select>
+            </div>
           </div>
-          <div class="filter_end_date col-sm-4" data-type="end_date" data-analysis="year">
-            <label for="filter_end_date">End Year:</label>
-            <select id="filter_end_date"></select>
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="filter_end_date">End Year:</label>
+            </div>
+            <div class="filter_end_date col-sm-3" data-type="end_date" data-analysis="year">
+              <select id="filter_end_date"></select>
+            </div>
+
+            <div class="col-sm-4">
+              <label for="filter_type">Grant Type:</label>
+            </div>
+            <div class="filter_type col-sm-3" data-type="type">
+              <select id="filter_type"></select>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="filter_grantee_location col-sm-6" data-type="grantee_location" data-analysis="in-string">
-            <label for="filter_grantee_location">Grantee Location:</label>
-            <select id="filter_grantee_location">
-              <option value="0">All</option>
-              <option value="Adjara" data-id="1">Adjara</option>
-              <option value="Guria" data-id="2">Guria</option>
-              <option value="Imereti" data-id="3">Imereti</option>
-              <option value="Kakheti" data-id="4">Kakheti</option>
-              <option value="Kvemo Kartli" data-id="5">Kvemo Kartli</option>
-              <option value="Mtskheta-Mtianeti" data-id="7">Mtskheta-Mtianeti</option>
-              <option value="Racha-Lechkumi / Kvemo Svaneti" data-id="8">Racha-Lechkumi / Kvemo Svaneti</option>
-              <option value="Samegrelo / Zemo Svaneti" data-id="11">Samegrelo / Zemo Svaneti</option>
-              <option value="Samtskhe-Javakheti" data-id="6">Samtskhe-Javakheti</option>
-              <option value="Shida Kartli" data-id="9">Shida Kartli</option>
-              <option value="Tbilisi" data-id="32">Tbilisi</option>
-            </select>
+
+          <div class="row">
+            <div class="col-sm-2">
+              <label for="filter_topic">Topic / Area:</label>
+            </div>
+            <div class="filter_topic col-sm-3" data-type="topic">
+              <select id="filter_topic"></select>
+            </div>
+            <div class="col-sm-7" id="reset_btn">
+              <button type="button" id="reset_filters" class="btn btn-info btn-xs">Clear Filters</button>
+            </div>
           </div>
-          <div class="filter_impl_location col-sm-6" data-type="impl_location" data-analysis="in-string">
-            <label for="filter_impl_location">Implementation Location:</label>
-            <select id="filter_impl_location">
-              <option value="0">All</option>
-              <option value="Adjara" data-id="1">Adjara</option>
-              <option value="Guria" data-id="2">Guria</option>
-              <option value="Imereti" data-id="3">Imereti</option>
-              <option value="Kakheti" data-id="4">Kakheti</option>
-              <option value="Kvemo Kartli" data-id="5">Kvemo Kartli</option>
-              <option value="Mtskheta-Mtianeti" data-id="7">Mtskheta-Mtianeti</option>
-              <option value="Racha-Lechkumi / Kvemo Svaneti" data-id="8">Racha-Lechkumi / Kvemo Svaneti</option>
-              <option value="Samegrelo / Zemo Svaneti" data-id="11">Samegrelo / Zemo Svaneti</option>
-              <option value="Samtskhe-Javakheti" data-id="6">Samtskhe-Javakheti</option>
-              <option value="Shida Kartli" data-id="9">Shida Kartli</option>
-              <option value="Tbilisi" data-id="32">Tbilisi</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="filter_type col-sm-4" data-type="type">
-            <label for="filter_type">Grant Type:</label>
-            <select id="filter_type"></select>
-          </div>
-          <div class="filter_topic col-sm-4" data-type="topic">
-            <label for="filter_topic">Topic / Area:</label>
-            <select id="filter_topic"></select>
-          </div>
-          <div class="col-sm-4">
-            <button type="button" id="reset_filters" class="btn btn-info btn-xs">Clear Filters</button>
-          </div>
-        </div>
+        </div>  
       </div>
       
       
@@ -178,9 +279,9 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
               <th>
                 Project Title
               </th>
-              <th>
+              <!--th>
                 Description
-              </th>
+              </th-->
               <th>
                 Budget
               </th>
@@ -191,10 +292,10 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
                 End Date
               </th>
               <th>
-                Grantee Location
+                Impl. Location
               </th>
               <th>
-                Implementation Location
+                Grantee Location
               </th>
               <th>
                 Grant Type
@@ -242,6 +343,9 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       if($.fn.DataTable.TableTools){$.extend(true,$.fn.DataTable.TableTools.classes,{"container":"DTTT btn-group","buttons":{"normal":"btn","disabled":"disabled"},"collection":{"container":"DTTT_dropdown dropdown-menu","buttons":{"normal":"","disabled":"disabled"}},"print":{"info":"DTTT_print_info modal"},"select":{"row":"active"}});$.extend(true,$.fn.DataTable.TableTools.DEFAULTS.oTags,{"collection":{"container":"ul","button":"li","liner":"a"}})};
     </script>
     <script>
+(function($){function maybeCall(thing,ctx){return(typeof thing=="function")?(thing.call(ctx)):thing}function isElementInDOM(ele){while(ele=ele.parentNode){if(ele==document){return true}}return false}function Tipsy(element,options){this.$element=$(element);this.options=options;this.enabled=true;this.fixTitle()}Tipsy.prototype={show:function(){var title=this.getTitle();if(title&&this.enabled){var $tip=this.tip();$tip.find(".tipsy-inner")[this.options.html?"html":"text"](title);$tip[0].className="tipsy";$tip.remove().css({top:0,left:0,visibility:"hidden",display:"block"}).prependTo(document.body);var pos=$.extend({},this.$element.offset(),{width:this.$element[0].offsetWidth,height:this.$element[0].offsetHeight});var actualWidth=$tip[0].offsetWidth,actualHeight=$tip[0].offsetHeight,gravity=maybeCall(this.options.gravity,this.$element[0]);var tp;switch(gravity.charAt(0)){case"n":tp={top:pos.top+pos.height+this.options.offset,left:pos.left+pos.width/2-actualWidth/2};break;case"s":tp={top:pos.top-actualHeight-this.options.offset,left:pos.left+pos.width/2-actualWidth/2};break;case"e":tp={top:pos.top+pos.height/2-actualHeight/2,left:pos.left-actualWidth-this.options.offset};break;case"w":tp={top:pos.top+pos.height/2-actualHeight/2,left:pos.left+pos.width+this.options.offset};break}if(gravity.length==2){if(gravity.charAt(1)=="w"){tp.left=pos.left+pos.width/2-15}else{tp.left=pos.left+pos.width/2-actualWidth+15}}$tip.css(tp).addClass("tipsy-"+gravity);$tip.find(".tipsy-arrow")[0].className="tipsy-arrow tipsy-arrow-"+gravity.charAt(0);if(this.options.className){$tip.addClass(maybeCall(this.options.className,this.$element[0]))}if(this.options.fade){$tip.stop().css({opacity:0,display:"block",visibility:"visible"}).animate({opacity:this.options.opacity})}else{$tip.css({visibility:"visible",opacity:this.options.opacity})}}},hide:function(){if(this.options.fade){this.tip().stop().fadeOut(function(){$(this).remove()})}else{this.tip().remove()}},fixTitle:function(){var $e=this.$element;if($e.attr("title")||typeof($e.attr("original-title"))!="string"){$e.attr("original-title",$e.attr("title")||"").removeAttr("title")}},getTitle:function(){var title,$e=this.$element,o=this.options;this.fixTitle();var title,o=this.options;if(typeof o.title=="string"){title=$e.attr(o.title=="title"?"original-title":o.title)}else{if(typeof o.title=="function"){title=o.title.call($e[0])}}title=(""+title).replace(/(^\s*|\s*$)/,"");return title||o.fallback},tip:function(){if(!this.$tip){this.$tip=$('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');this.$tip.data("tipsy-pointee",this.$element[0])}return this.$tip},validate:function(){if(!this.$element[0].parentNode){this.hide();this.$element=null;this.options=null}},enable:function(){this.enabled=true},disable:function(){this.enabled=false},toggleEnabled:function(){this.enabled=!this.enabled}};$.fn.tipsy=function(options){if(options===true){return this.data("tipsy")}else{if(typeof options=="string"){var tipsy=this.data("tipsy");if(tipsy){tipsy[options]()}return this}}options=$.extend({},$.fn.tipsy.defaults,options);function get(ele){var tipsy=$.data(ele,"tipsy");if(!tipsy){tipsy=new Tipsy(ele,$.fn.tipsy.elementOptions(ele,options));$.data(ele,"tipsy",tipsy)}return tipsy}function enter(){var tipsy=get(this);tipsy.hoverState="in";if(options.delayIn==0){tipsy.show()}else{tipsy.fixTitle();setTimeout(function(){if(tipsy.hoverState=="in"){tipsy.show()}},options.delayIn)}}function leave(){var tipsy=get(this);tipsy.hoverState="out";if(options.delayOut==0){tipsy.hide()}else{setTimeout(function(){if(tipsy.hoverState=="out"){tipsy.hide()}},options.delayOut)}}if(!options.live){this.each(function(){get(this)})}if(options.trigger!="manual"){var binder=options.live?"live":"bind",eventIn=options.trigger=="hover"?"mouseenter":"focus",eventOut=options.trigger=="hover"?"mouseleave":"blur";this[binder](eventIn,enter)[binder](eventOut,leave)}return this};$.fn.tipsy.defaults={className:null,delayIn:0,delayOut:0,fade:false,fallback:"",gravity:"n",html:false,live:false,offset:0,opacity:0.8,title:"title",trigger:"hover"};$.fn.tipsy.revalidate=function(){$(".tipsy").each(function(){var pointee=$.data(this,"tipsy-pointee");if(!pointee||!isElementInDOM(pointee)){$(this).remove()}})};$.fn.tipsy.elementOptions=function(ele,options){return $.metadata?$.extend({},options,$(ele).metadata()):options};$.fn.tipsy.autoNS=function(){return $(this).offset().top>($(document).scrollTop()+$(window).height()/2)?"s":"n"};$.fn.tipsy.autoWE=function(){return $(this).offset().left>($(document).scrollLeft()+$(window).width()/2)?"e":"w"};$.fn.tipsy.autoBounds=function(margin,prefer){return function(){var dir={ns:prefer[0],ew:(prefer.length>1?prefer[1]:false)},boundTop=$(document).scrollTop()+margin,boundLeft=$(document).scrollLeft()+margin,$this=$(this);if($this.offset().top<boundTop){dir.ns="n"}if($this.offset().left<boundLeft){dir.ew="w"}if($(window).width()+$(document).scrollLeft()-$this.offset().left<margin){dir.ew="e"}if($(window).height()+$(document).scrollTop()-$this.offset().top<margin){dir.ns="s"}return dir.ns+(dir.ew?dir.ew:"")}}})(jQuery);    
+    </script>
+    <script>
       var json_data, data_table, shape_data, map_impl, map_grantee, choropleth_layer_impl, choropleth_layer_grantee, popup_impl, popup_grantee;
       var region_ids = [1,2,3,4,5,6,7,8,9,11,32];
       var no_data_color = "#999";
@@ -264,12 +368,12 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         /***************************************************/
         // get the color to show on the map
         function get_map_color(budget) {
-          return budget > 1000000 ? '#006d2c' :
-                 budget > 500000  ? '#2ca25f' :
-                 budget > 100000  ? '#66c2a4' :
-                 budget > 50000   ? '#99d8c9' :
-                 budget > 10000   ? '#ccece6' :
-                                    '#edf8fb';
+          return budget > 1000000 ? '#336ba6' :
+                 budget > 500000  ? '#6598cf' :
+                 budget > 100000  ? '#8abcf1' :
+                 budget > 50000   ? '#b0d5ff' :
+                 budget > 10000   ? '#daebff' :
+                                    '#eff9fb';
         }
 
         
@@ -595,6 +699,16 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         }
         
 
+        // for each project title, add more link with project description in title attribute
+        // so it can appear in popup
+        function add_more_links(data){
+          var more = "<div class='more_link' original-title='[x]'>more...</div>";
+          for(var i=0; i<data.length; i++){
+            data[i][json_keys['project']]['$t'] += more.replace('[x]', data[i][json_keys['desc']]['$t']);
+          }        
+
+        }
+
 
       $(document).ready(function(){
 
@@ -645,7 +759,8 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
           // load the implimentation map
           map_impl = L.map('map_impl').setView([42.293564192170095, 43.04443359375,], 7);
           L.tileLayer(url, {
-              maxZoom: 18,
+              maxZoom: 13,
+              minZoom: 5,
               opacity: 0.5
           }).addTo(map_impl);
           
@@ -686,7 +801,8 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
           // load the grantee map
           map_grantee = L.map('map_grantee').setView([42.293564192170095, 43.04443359375,], 7);
           L.tileLayer(url, {
-              maxZoom: 18,
+              maxZoom: 13,
+              minZoom: 5,
               opacity: 0.5
           }).addTo(map_grantee);
           
@@ -729,29 +845,35 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
           $.getJSON( "https://spreadsheets.google.com/feeds/list/19RqNkt9AlAFFTsQJAIwK605husVRzo0-YtSY7J0S7pU/1567754387/public/values?alt=json", function( data ) {
             json_data = data.feed.entry;
 
+            // add the description to the titles
+            add_more_links(json_data);
+
             // load data table
             data_table = $('#data_table').dataTable({
               "sPaginationType": "bs_normal",
               "bProcessing": true,
               "bSortClasses": false,
-              "iDisplayLength": 20,
-              "aLengthMenu": [[20, 40, 60, 80], [20, 40, 60, 80]],
+              "iDisplayLength": 10,
+              "aLengthMenu": [[10, 20, 40, 60, 80], [10, 20, 40, 60, 80]],
               "oLanguage": {
                 "sSearch": "Search: "
               },
               "aoColumns": [
                   { "mData": json_keys['grantee'] + '.$t' },
                   { "mData": json_keys['project'] + '.$t' },
-                  { "mData": json_keys['desc'] + '.$t' },
+//                  { "mData": json_keys['desc'] + '.$t' },
                   { "mData": json_keys['budget'] + '.$t', "sType": "formatted-num"},
                   { "mData": json_keys['start_date'] + '.$t', "sType": "us_date" },
                   { "mData": json_keys['end_date'] + '.$t', "sType": "us_date" },
-                  { "mData": json_keys['grantee_location'] + '.$t' },
                   { "mData": json_keys['impl_location'] + '.$t' },
+                  { "mData": json_keys['grantee_location'] + '.$t' },
                   { "mData": json_keys['type'] + '.$t' },
                   { "mData": json_keys['topic'] + '.$t' }
                   
-              ]
+              ],
+              "fnDrawCallback": function( oSettings ) {
+                $('.more_link').tipsy({gravity: 'w'});
+              }
             });
 
             // load the data into the table and load the filters
@@ -843,4 +965,3 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
     </script>
   </body>
 </html>
-
