@@ -14,7 +14,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
     </style>   
     <style>
       .tipsy { font-size: 12px; position: absolute; padding: 5px; z-index: 100000; }
-      .tipsy-inner { background-color: #0c5baa; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+      .tipsy-inner { background-color: #575757; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
 
       /* Rounded corners */
       .tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
@@ -25,10 +25,10 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       .tipsy-arrow { position: absolute; width: 0; height: 0; line-height: 0; border: 5px dashed #000; }
 
       /* Rules to colour arrows */
-      .tipsy-arrow-n { border-bottom-color: #0c5baa; }
-      .tipsy-arrow-s { border-top-color: #0c5baa; }
-      .tipsy-arrow-e { border-left-color: #0c5baa; }
-      .tipsy-arrow-w { border-right-color: #0c5baa; }
+      .tipsy-arrow-n { border-bottom-color: #575757; }
+      .tipsy-arrow-s { border-top-color: #575757; }
+      .tipsy-arrow-e { border-left-color: #575757; }
+      .tipsy-arrow-w { border-right-color: #575757; }
 
       .tipsy-n .tipsy-arrow { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
         .tipsy-nw .tipsy-arrow { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
@@ -43,6 +43,11 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       #main_container{
         width: 670px;
         font-size: 13px;
+        color: #fff;
+        background-color: #000;
+      }
+      h1{
+        color: #dfc063;
       }
       #filter_container{
         font-size: 13px;
@@ -52,20 +57,27 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       }
       #filter_container select{
         width: 100%;
-        background-color: #c6c6c6;
-        color: #000;
+        background-color: #575757;
+        color: #fff;
       }
       #filter_container #reset_btn{
         text-align: right;
       }
       #filter_container #reset_btn #reset_filters{
-        background-color: #e20842;
+        background-color: #dfc063;
+        color: #000;
         border-color: transparent;
         font-weight: bold;
         opacity: 0.8;
       }
       #filter_container #reset_btn #reset_filters:hover{
         opacity: 1;
+      }
+      .nav-tabs>li>a{
+        color: #dfc063;
+      }
+      .nav-tabs>li>a:hover{
+        color: #575757;
       }
       .popup {
         padding: 6px 8px;
@@ -74,6 +86,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         background: rgba(255,255,255,0.8);
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
         border-radius: 5px;
+        color: #000;
       }
       .popup h4 {
         margin: 0 0 5px;
@@ -109,21 +122,34 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         width: 640px;
       }
 
+      table.dataTable tr.even{
+        background-color: #000;
+      }
+      table.dataTable tr.odd{
+        background-color: #222;
+      }
+      .table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th{
+        background-color: #222;
+      }
+      .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th{
+        background-color: #222;
+      }
+      
       .table_container table td, .table_container table th{
         font-size: 11px
       }
 
       .table_container .budget_total{
-        background-color: #0c5baa;
+        background-color: #575757;
         color: #fff;
         display: inline-block;
         padding: 5px 10px;
-        margin-top: -5px;        
+        margin-top: -5px;    
         font-weight: bold;    
       } 
       #data_table_length select{
-        background-color: #c6c6c6;
-        color: #000;
+        background-color: #575757;
+        color: #fff;
         font-weight: normal;
       }
       
@@ -133,17 +159,27 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         border-bottom: solid 1px #ccc;
       }
       
+      .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, 
+      .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus{     
+        background-color: #000;
+      }
+
       .pagination>li>a, .pagination>li>span{
-        color: #0c5baa;
+        color: #dfc063;
+        background-color: #000;
       }
 
       .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus{
-        background-color: #0c5baa;
-        border-color: #0c5baa;
+        background-color: #dfc063;
+        border-color: #dfc063;
+        color: #000;
       }
-      
+      .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus{
+        color: #dfc063;
+        background-color: #575757;
+      }
       .more_link{
-        color: #0c5baa;
+        color: #dfc063;
         cursor: pointer;
       }
     </style>
