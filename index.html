@@ -4,10 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <title>Supporting Ideas that Matter</title>
+
+  <body>
+
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-    <title>Supporting Ideas that Matter</title>
 
     <style>/* datatable bootstrap styles */
 div.dataTables_length label{float:left;text-align:left}div.dataTables_length select{width:75px}div.dataTables_filter label{float:right}div.dataTables_info{padding-top:26px}div.dataTables_paginate{float:right;margin:0}table.table{clear:both;margin-bottom:6px !important;max-width:none !important}table.table thead .sorting,table.table thead .sorting_asc,table.table thead .sorting_desc,table.table thead .sorting_asc_disabled,table.table thead .sorting_desc_disabled{cursor:pointer;*cursor:hand}table.table thead .sorting{background:url('./images/sort_both.png') no-repeat center right}table.table thead .sorting_asc{background:url('./images/sort_asc.png') no-repeat center right}table.table thead .sorting_desc{background:url('./images/sort_desc.png') no-repeat center right}table.table thead .sorting_asc_disabled{background:url('./images/sort_asc_disabled.png') no-repeat center right}table.table thead .sorting_desc_disabled{background:url('./images/sort_desc_disabled.png') no-repeat center right}table.dataTable th:active{outline:0}div.dataTables_scrollHead table{margin-bottom:0 !important;border-bottom-left-radius:0;border-bottom-right-radius:0}div.dataTables_scrollHead table thead tr:last-child th:first-child,div.dataTables_scrollHead table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.dataTables_scrollBody table{border-top:0;margin-bottom:0 !important}div.dataTables_scrollBody tbody tr:first-child th,div.dataTables_scrollBody tbody tr:first-child td{border-top:0}div.dataTables_scrollFoot table{border-top:0}.table tbody tr.active td,.table tbody tr.active th{background-color:#08C;color:white}.table tbody tr.active:hover td,.table tbody tr.active:hover th{background-color:#0075b0 !important}.table-striped tbody tr.active:nth-child(odd) td,.table-striped tbody tr.active:nth-child(odd) th{background-color:#017ebc}table.DTTT_selectable tbody tr{cursor:pointer;*cursor:hand}div.DTTT .btn{color:#333 !important;font-size:12px}div.DTTT .btn:hover{text-decoration:none !important}ul.DTTT_dropdown.dropdown-menu a{color:#333 !important}ul.DTTT_dropdown.dropdown-menu li:hover a{background-color:#08c;color:white !important}div.DTTT_print_info.modal{height:150px;margin-top:-75px;text-align:center}div.DTTT_print_info h6{font-weight:normal;font-size:28px;line-height:28px;margin:1em}div.DTTT_print_info p{font-size:14px;line-height:20px}div.DTFC_LeftHeadWrapper table,div.DTFC_LeftFootWrapper table,table.DTFC_Cloned tr.even{background-color:white}div.DTFC_LeftHeadWrapper table{margin-bottom:0 !important;border-top-right-radius:0 !important;border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftHeadWrapper table thead tr:last-child th:first-child,div.DTFC_LeftHeadWrapper table thead tr:last-child td:first-child{border-bottom-left-radius:0 !important;border-bottom-right-radius:0 !important}div.DTFC_LeftBodyWrapper table{border-top:0;margin-bottom:0 !important}div.DTFC_LeftBodyWrapper tbody tr:first-child th,div.DTFC_LeftBodyWrapper tbody tr:first-child td{border-top:0}div.DTFC_LeftFootWrapper table{border-top:0}
@@ -41,7 +44,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
     </style> 
     <style>
       #main_container{
-        width: 670px;
+        width: 630px;
         font-size: 13px;
       }
       #filter_container{
@@ -59,13 +62,13 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         text-align: right;
       }
       #filter_container #reset_btn #reset_filters{
-        background-color: #e20842;
+        background-color: #CB0532;
         border-color: transparent;
         font-weight: bold;
-        opacity: 0.8;
+        opacity: 1.0;
       }
       #filter_container #reset_btn #reset_filters:hover{
-        opacity: 1;
+        opacity: 0.8;
       }
       .popup {
         padding: 6px 8px;
@@ -97,7 +100,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         margin-bottom: 20px;
       }
       .map_container{
-        width: 640px; 
+        width: 590px; 
         margin: 0 auto;
         margin-bottom: 20px;
       }
@@ -106,7 +109,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       }
       
       .dataTables_wrapper{
-        width: 640px;
+        width: 590px;
       }
 
       .table_container table td, .table_container table th{
@@ -155,7 +158,6 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       }
     </style>
   </head>
-  <body>
 
     <div class="container" id="main_container">
       <div class="filter_container">
@@ -772,7 +774,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
     			var url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
           /***************************************************/
           // load the implimentation map
-          map_impl = L.map('map_impl').setView([42.309815415686664, 43.17626953125], 7);
+          map_impl = L.map('map_impl').setView([42.3016903282445, 43.22021484375], 7);
           L.tileLayer(url, {
               maxZoom: 13,
               minZoom: 5,
@@ -814,7 +816,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
 
           /***************************************************/
           // load the grantee map
-          map_grantee = L.map('map_grantee').setView([42.309815415686664, 43.17626953125], 7);
+          map_grantee = L.map('map_grantee').setView([42.3016903282445, 43.22021484375], 7);
           L.tileLayer(url, {
               maxZoom: 13,
               minZoom: 5,
