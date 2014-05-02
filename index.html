@@ -14,7 +14,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
     </style>   
     <style>
       .tipsy { font-size: 12px; position: absolute; padding: 5px; z-index: 100000; }
-      .tipsy-inner { background-color: #0c5baa; color: #FFF; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+      .tipsy-inner { background-color: #0c5baa; color: #FFF; max-width: 250px; padding: 5px 8px 4px 12px; }
 
       /* Rounded corners */
       .tipsy-inner { border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
@@ -145,6 +145,13 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
       .more_link{
         color: #0c5baa;
         cursor: pointer;
+      }
+
+      .tipsy-inner div:first-of-type{
+        margin-bottom: 5px;
+      }
+      .tipsy-inner div span.title{
+        font-weight: bold;
       }
     </style>
   </head>
@@ -281,9 +288,9 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
               <th>
                 Grantee
               </th>
-              <th>
+              <!--th>
                 Project Title
-              </th>
+              </th-->
               <!--th>
                 Description
               </th-->
@@ -707,11 +714,14 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
         // for each project title, add more link with project description in title attribute
         // so it can appear in popup
         function add_more_links(data){
-          var more = "<div class='more_link' original-title='[x]'>more...</div>";
+          var more = "<div class='more_link' original-title='[x]'>Project Details...</div>";
+          var new_text;
           for(var i=0; i<data.length; i++){
-            data[i][json_keys['project']]['$t'] += more.replace('[x]', data[i][json_keys['desc']]['$t']);
+            new_text = '<div><span class="title">Project Title:</span> <br>' + data[i][json_keys['project']]['$t'];
+            new_text += '</div><div><span class="title">Project Description:</span> <br> ' + data[i][json_keys['desc']]['$t'];
+            new_text += '</div>';
+            data[i][json_keys['grantee']]['$t'] += more.replace('[x]', new_text);
           }        
-
         }
 
 
@@ -865,7 +875,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
               },
               "aoColumns": [
                   { "mData": json_keys['grantee'] + '.$t' },
-                  { "mData": json_keys['project'] + '.$t' },
+//                  { "mData": json_keys['project'] + '.$t' },
 //                  { "mData": json_keys['desc'] + '.$t' },
                   { "mData": json_keys['budget'] + '.$t', "sType": "formatted-num"},
                   { "mData": json_keys['start_date'] + '.$t', "sType": "us_date" },
@@ -877,7 +887,7 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
                   
               ],
               "fnDrawCallback": function( oSettings ) {
-                $('.more_link').tipsy({gravity: 'w'});
+                $('.more_link').tipsy({gravity: 'w', html: true, opacity: 0.9});
               }
             });
 
