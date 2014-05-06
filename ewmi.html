@@ -757,8 +757,8 @@ div.dataTables_length label{float:left;text-align:left}div.dataTables_length sel
           var more = "<div class='more_link' original-title='[x]'>Project Details...</div>";
           var new_text;
           for(var i=0; i<data.length; i++){
-            new_text = '<div><span class="title">Project Title:</span> <br>' + data[i][json_keys['project']]['$t'];
-            new_text += '</div><div><span class="title">Project Description:</span> <br> ' + data[i][json_keys['desc']]['$t'];
+            new_text = '<div><span class=\"title\">Project Title:</span> <br>' + data[i][json_keys['project']]['$t'].replace("'", "&#39;");
+            new_text += '</div><div><span class=\"title\">Project Description:</span> <br> ' + data[i][json_keys['desc']]['$t'].replace("'", "&#39;");
             new_text += '</div>';
             data[i][json_keys['grantee']]['$t'] += more.replace('[x]', new_text);
           }        
